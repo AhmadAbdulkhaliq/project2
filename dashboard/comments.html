@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+ 
+    <script>
+    $(function () {
+
+let url = "http://localhost:3000/comments";
+
+let tbody = $("table tbody");
+
+var $postId = $("#postId");
+var $body = $("#body");
+var $owner = $("#owner");
+
+function addRow(input) {
+
+    var tr = $("<tr>").attr('id', input.id).addClass('newRow').append([
+        $('<td>').html(input.id),
+        $('<td>').html(input.body.substring(0,20).concat(".....")).attr('id', 'tdBody'),
+        $('<td>').append([$('<button>').attr('id', 'remove').addClass('btn btn-danger').html('delete'),
+        $('<button>').attr('id', 'edit').addClass("btn btn-info").html('edit')
+
+        ])
+    ]);
+    tbody.append(tr);
+}
+
+//GET
+(function () {
+    return fetch(url)
+        .then(res => res.json())
+        .then(respponse => {
+            let tbody = $("table tbody");
+
+            respponse.forEach(data => {
+                addRow(data)
+            })
+        })
+        .catch(error => alert('server not work'))
+}())
+
+
+//POST
+$("#sharePost").on("click", () => {
+    //create object
+    let input = {
+        body: $body.val(),
+        owner: $owner.val(),
+        postId:$postId.val()
+    }
+
+    axios.post(url, input)
+        .then(res => {
+            addRow(res.data);
+            $($postId).val('')
+            $($body).val('')
+            $($owner).val('')
+        })
+
+})
+
+
+//DELETE
+$(tbody).on('click', '#remove', function (event) {
+    let item = $(this).closest('.newRow')
+                let id = item.attr('id')
+                const urlId = url + '/' + id;
+               item.remove()
+})
+
+
+//edit
+$(tbody).on( 'click','#edit', function () {
+    let item = $(this).closest('.newRow')
+    let myBody=$(item).find('#tdBody').html()
+    $('#sharePost').css('display','none')
+
+    $($body).val(myBody)
+
+    $('#buttons').append([
+        $('<button>').attr('id', 'saveEdit').addClass("btn btn-success").html('save')
+        .on( 'click', function () {
+
+           
+            let id = item.attr('id')
+            const urlId = url + '/' + id;
+            var newBody = ($body).val();
+            let update={
+                body:newBody
+            }
+    
+            axios.put(urlId,update)
+             
+                $('#cancelEdit').remove()
+                $('#saveEdit').remove()
+                $($body).val('')
+                $($userId).val('')
+                $($postId).val('')
+                $('#sharePost').css('display','initial')
+
+                const actions = item.find('td:last-child').clone();
+                item.html(`<td>${id}</td><td id="tdBody">${update.body}</td>`)
+                    .append(actions);
+    
+        }),
+
+
+        $('<button>').attr('id', 'cancelEdit').addClass("btn btn-warning").html('cancel')
+        .on( 'click', function () {
+    
+            $('#cancelEdit').remove()
+            $('#saveEdit').remove()
+            $($body).val('')
+            $($userId).val('')
+            $($postId).val('')
+            $('#sharePost').css('display','initial')
+
+
+        })
+
+    ])
+})
+
+
+})
+
+    </script>
+  </head>
+<body>
+ 
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="index.html"><h2>Re-coded BlogPost</h2></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link " href="../index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-item nav-link" href="posts.html">posts </a> 
+        <a class="nav-item nav-link" href="users.html">users</a> 
+        <a class="nav-item nav-link " href="comments.html">comments</a> 
+        <a class="nav-item nav-link " href="categories.html">Categories</a> 
+
+
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="container">
+    
+<form>
+    <div class="form-group">
+        <label for="postId">postId</label>
+        <input type="text" class="form-control" id="postId" >
+      </div>
+      <div class="form-group">
+        <label for="owner">owner</label>
+        <input type="text" class="form-control" id="owner" >
+      </div>
+  <div class="form-group">
+      <label for="body">Body</label>
+      <textarea type="text" class="form-control" id="body"
+       rows="2" cols="30"></textarea>
+    </div>
+</form>
+<br>
+<div id="buttons">
+  <button id="sharePost" class="btn btn-primary">write new post</button>
+
+</div>
+<br> <br>
+
+
+  <div id="app" class="table-responsive">
+
+
+      <table class="table table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Body</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+           
+          </tbody>
+        </table>
+
+</div>
+  </div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "posts": [
+    {
+      "title": "android",
+      "body": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "id": 1
+    },
+    {
+      "title": "web",
+      "body": "dsbhhdhzbcuyzxhcbdzghcdsvdx",
+      "userId": "2",
+      "owner": "mohammed",
+      "categorie": "web",
+      "id": 2
+    },
+    {
+      "title": "ios",
+      "body": "iosiosiosiosios",
+      "userId": "3",
+      "owner": "ahmed",
+      "categorie": "ios",
+      "id": 3
+    }
+  ],
+  "comments": [
+    {
+      "body": "hahah",
+      "owner": "ali",
+      "postId": "1",
+      "id": 2
+    },
+    {
+      "body": "hahah",
+      "owner": "ahmad",
+      "postId": "1",
+      "id": 3
+    }
+  ],
+  "users": [
+    {
+      "name": "typicode",
+      "email": "user@example.comhahahahadsdasdasd",
+      "id": 1
+    },
+    {
+      "name": "ahmad",
+      "email": "a@a",
+      "id": 2
+    }
+  ],
+  "categories": [
+    {
+      "categorie": "android",
+      "id": 1
+    },
+    {
+      "categorie": "web",
+      "id": 2
+    }
+  ]
+}
